@@ -246,26 +246,36 @@ function startLocalOAuthServer(state: string): Promise<OAuthServerInfo> {
 
 	return new Promise((resolve) => {
 		server
-			.listen(1455, "127.0.0.1", () => {
-				resolve({
-					close: () => server.close(),
-					cancelWait: () => {
-						cancelled = true;
-					},
-					waitForCode: async () => {
-						const sleep = () => new Promise((r) => setTimeout(r, 100));
-						for (let i = 0; i < 600; i += 1) {
-							if (lastCode) return { code: lastCode };
-							if (cancelled) return null;
-							await sleep();
-						}
-						return null;
-					},
-				});
-			})
+			.listen(
+				1455,
+				typeof process !== "undefined" && process.env?.OAUTH_CALLBACK_HOST
+					? process.env.OAUTH_CALLBACK_HOST
+					: "127.0.0.1",
+				() => {
+					resolve({
+						close: () => server.close(),
+						cancelWait: () => {
+							cancelled = true;
+						},
+						waitForCode: async () => {
+							const sleep = () => new Promise((r) => setTimeout(r, 100));
+							for (let i = 0; i < 600; i += 1) {
+								if (lastCode) return { code: lastCode };
+								if (cancelled) return null;
+								await sleep();
+							}
+							return null;
+						},
+					});
+				},
+			)
 			.on("error", (err: NodeJS.ErrnoException) => {
+				const host =
+					typeof process !== "undefined" && process.env?.OAUTH_CALLBACK_HOST
+						? process.env.OAUTH_CALLBACK_HOST
+						: "127.0.0.1";
 				console.error(
-					"[openai-codex] Failed to bind http://127.0.0.1:1455 (",
+					`[openai-codex] Failed to bind http://${host}:1455 (`,
 					err.code,
 					") Falling back to manual paste.",
 				);

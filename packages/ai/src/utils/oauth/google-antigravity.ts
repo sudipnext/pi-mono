@@ -108,7 +108,13 @@ async function startCallbackServer(): Promise<CallbackServerInfo> {
 			reject(err);
 		});
 
-		server.listen(51121, "127.0.0.1", () => {
+		// Allow configuring host for Docker environments (OAUTH_CALLBACK_HOST=0.0.0.0)
+		const host =
+			typeof process !== "undefined" && process.env?.OAUTH_CALLBACK_HOST
+				? process.env.OAUTH_CALLBACK_HOST
+				: "127.0.0.1";
+
+		server.listen(51121, host, () => {
 			resolve({
 				server,
 				cancelWait: () => {

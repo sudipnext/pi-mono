@@ -929,6 +929,20 @@ Set `PI_AI_ANTIGRAVITY_VERSION` to override the Antigravity User-Agent version w
 export PI_AI_ANTIGRAVITY_VERSION="1.23.0"
 ```
 
+#### OAuth Callback Host
+
+Set `OAUTH_CALLBACK_HOST` to configure the host address for OAuth callback servers (used by Google Gemini CLI, Antigravity, and OpenAI Codex providers):
+
+```bash
+# Default (localhost only)
+export OAUTH_CALLBACK_HOST="127.0.0.1"
+
+# Docker environments (accept connections from any network interface)
+export OAUTH_CALLBACK_HOST="0.0.0.0"
+```
+
+When running inside Docker containers, set this to `0.0.0.0` to allow the OAuth callback server to accept connections from outside the container.
+
 #### Cache Retention
 
 Set `PI_CACHE_RETENTION=long` to extend prompt cache retention:

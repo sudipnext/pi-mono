@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Added `OAUTH_CALLBACK_HOST` environment variable to allow configuring OAuth callback server host (defaults to `127.0.0.1`, set to `0.0.0.0` for Docker environments)
+
 ## [0.52.10] - 2026-02-12
 
 ### Added
